@@ -14,6 +14,8 @@ class AuthHelper {
       UserCredential userCredential = await firebaseAuth
           .createUserWithEmailAndPassword(email: email, password: password);
       await SharedHelper.sharedHelper.setId(userCredential.user.uid);
+      print(
+          "hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh${await SharedHelper.sharedHelper.getId()}");
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         CustomDialoug.customDialoug

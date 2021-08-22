@@ -6,9 +6,11 @@ class SharedHelper {
   Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   Future<String> id;
+  getId() async {
+    final SharedPreferences prefs = await _prefs;
 
-  getId() {
-    return this.id;
+    final idd = prefs.getString('id');
+    return idd;
   }
 
   Future<String> setId(String id) async {

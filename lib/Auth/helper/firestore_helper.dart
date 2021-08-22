@@ -1,6 +1,7 @@
 import 'package:chat_app_with_firebase/model/register_request.dart';
 import 'package:chat_app_with_firebase/model/usermodel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 class FirestoreHelper {
   FirestoreHelper._();
@@ -20,12 +21,25 @@ class FirestoreHelper {
     print(documentSnapshot.data());
   }
 
+  // Future<List<UserModel>> getAllUsersFromFirestore() async {
+  //   QuerySnapshot<Map<String, dynamic>> querySnapshot =
+  //       await firebaseFirestore.collection('Users').get();
+  //   List<QueryDocumentSnapshot<Map<String, dynamic>>> docs = querySnapshot.docs;
+  //   List<UserModel> users =
+  //       docs.map((e) => UserModel.fromMap(e.data())).toList();
+  //   print(users.length);
+  //   // return users;
+  // }
   Future<List<UserModel>> getAllUsersFromFirestore() async {
-    QuerySnapshot<Map<String, dynamic>> querySnapshot =
-        await firebaseFirestore.collection('Users').get();
-    List<QueryDocumentSnapshot<Map<String, dynamic>>> docs = querySnapshot.docs;
-    List<UserModel> users =
-        docs.map((e) => UserModel.fromMap(e.data())).toList();
+    // QuerySnapshot<Map<String, dynamic>> querySnapshot =
+    //     await firebaseFirestore.collection('Users').get();
+    // List<QueryDocumentSnapshot<Map<String, dynamic>>> docs = querySnapshot.docs;
+    // List<UserModel> users =
+    //     docs.map((e) => UserModel.fromMap(e.data())).toList();
+    // print(users.length);
+    final listOfUser = await firebaseFirestore.collection('Users').get();
+    final users =
+        listOfUser.docs.map((e) => UserModel.fromMap(e.data())).toList();
     print(users.length);
     return users;
   }

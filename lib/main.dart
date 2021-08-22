@@ -37,13 +37,13 @@ class FirstClass extends StatefulWidget {
 class _FirstClassState extends State<FirstClass> {
   method() async {
     String id = await SharedHelper.sharedHelper.getId();
-
+    print(id);
     if (id == null) {
       // Navigator.of(context).pushReplacement(newRoute)(
       //     MaterialPageRoute(builder: (context) => FirebaseConfiguration()));
       RouteHelper.routeHelper
           .goToPageWithReplacement(FirebaseConfiguration.routeName);
-      print(id);
+
       // Login();
     } else {
       print("id");
@@ -53,6 +53,7 @@ class _FirstClassState extends State<FirstClass> {
 
   @override
   void initState() {
+    Firebase.initializeApp();
     method();
     super.initState();
   }
