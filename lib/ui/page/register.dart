@@ -5,6 +5,8 @@ import 'package:chat_app_with_firebase/ui/page/login.dart';
 import 'package:chat_app_with_firebase/ui/widgets/appbar.dart';
 import 'package:chat_app_with_firebase/ui/widgets/containpage.dart';
 import 'package:chat_app_with_firebase/ui/widgets/lastContainer.dart';
+import 'package:chat_app_with_firebase/widget/custom_button.dart';
+import 'package:chat_app_with_firebase/widget/custom_textField.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -17,22 +19,33 @@ class Register extends StatelessWidget {
         backgroundColor: Colors.grey[100],
         appBar: AppBar_widget(),
         body: Consumer<AuthProvider>(builder: (context, provider, x) {
-          return Contain_page(
-            addrestext1: 'Create your',
-            addresstext2: 'account',
-            hintemail: 'email',
-            hintpassword: 'password',
-            buttonText: 'Sign up',
-            textAfterButton:
-                'By clicking Sign up you agree to the our Terms and Conditions',
-            rowText1: 'Already an account?',
-            rowText2: 'Logn in',
-            forgettext: '',
-            emailcontroller: provider.emailController,
-            passwordcontroller: provider.passwordController,
-            function1: provider.register,
-            function2: () => RouteHelper.routeHelper.goToPage(Login.routeName),
+          return Column(
+            children: [
+              CustomTextfield('email', provider.emailController),
+              CustomTextfield('password', provider.passwordController),
+              CustomTextfield('city', provider.cityController),
+              CustomTextfield('country', provider.countryController),
+              CustomTextfield('fName', provider.fNmaeController),
+              CustomTextfield('email', provider.lNameController),
+              CustomButton(provider.register, 'Register'),
+            ],
           );
+          // return Contain_page(
+          //   addrestext1: 'Create your',
+          //   addresstext2: 'account',
+          //   hintemail: 'email',
+          //   hintpassword: 'password',
+          //   buttonText: 'Sign up',
+          //   textAfterButton:
+          //       'By clicking Sign up you agree to the our Terms and Conditions',
+          //   rowText1: 'Already an account?',
+          //   rowText2: 'Logn in',
+          //   forgettext: '',
+          //   emailcontroller: provider.emailController,
+          //   passwordcontroller: provider.passwordController,
+          //   function1: provider.register,
+          //   function2: () => RouteHelper.routeHelper.goToPage(Login.routeName),
+          // );
         })
 
         // body: Container(

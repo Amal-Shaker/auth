@@ -11,17 +11,18 @@ import 'out_services/route_helper.dart';
 
 void main() {
   runApp(ChangeNotifierProvider<AuthProvider>(
-      create: (context) => AuthProvider(),
-      child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          routes: {
-            Login.routeName: (context) => Login(),
-            Register.routeName: (context) => Register(),
-            ForgetPass.routeName: (context) => ForgetPass(),
-            Home.routeName: (context) => Home()
-          },
-          navigatorKey: RouteHelper.routeHelper.navKey,
-          home: FirebaseConfiguration())));
+    create: (context) => AuthProvider(),
+    child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        routes: {
+          Login.routeName: (context) => Login(),
+          Register.routeName: (context) => Register(),
+          ForgetPass.routeName: (context) => ForgetPass(),
+          Home.routeName: (context) => Home()
+        },
+        navigatorKey: RouteHelper.routeHelper.navKey,
+        home: FirebaseConfiguration()),
+  ));
 }
 
 class FirebaseConfiguration extends StatelessWidget {
