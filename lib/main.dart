@@ -1,3 +1,4 @@
+import 'package:chat_app_with_firebase/Auth/helper/shared_helper.dart';
 import 'package:chat_app_with_firebase/ui/page/HomePage.dart';
 import 'package:chat_app_with_firebase/ui/page/login.dart';
 import 'package:chat_app_with_firebase/ui/page/register.dart';
@@ -13,19 +14,57 @@ void main() {
   runApp(ChangeNotifierProvider<AuthProvider>(
     create: (context) => AuthProvider(),
     child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        routes: {
-          Login.routeName: (context) => Login(),
-          Register.routeName: (context) => Register(),
-          ForgetPass.routeName: (context) => ForgetPass(),
-          Home.routeName: (context) => Home()
-        },
-        navigatorKey: RouteHelper.routeHelper.navKey,
-        home: FirebaseConfiguration()),
+      debugShowCheckedModeBanner: false,
+      routes: {
+        Login.routeName: (context) => Login(),
+        Register.routeName: (context) => Register(),
+        ForgetPass.routeName: (context) => ForgetPass(),
+        Home.routeName: (context) => Home(),
+        FirebaseConfiguration.routeName: (context) => FirebaseConfiguration()
+      },
+      navigatorKey: RouteHelper.routeHelper.navKey,
+      //home: FirebaseConfiguration()
+      home: FirstClass(),
+    ),
   ));
 }
 
+class FirstClass extends StatefulWidget {
+  @override
+  _FirstClassState createState() => _FirstClassState();
+}
+
+class _FirstClassState extends State<FirstClass> {
+  method() async {
+    String id = await SharedHelper.sharedHelper.getId();
+
+    if (id == null) {
+      // Navigator.of(context).pushReplacement(newRoute)(
+      //     MaterialPageRoute(builder: (context) => FirebaseConfiguration()));
+      RouteHelper.routeHelper
+          .goToPageWithReplacement(FirebaseConfiguration.routeName);
+      print(id);
+      // Login();
+    } else {
+      print("id");
+      RouteHelper.routeHelper.goToPageWithReplacement(Home.routeName);
+    }
+  }
+
+  @override
+  void initState() {
+    method();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+}
+
 class FirebaseConfiguration extends StatelessWidget {
+  static String routeName = 'firebaseConfiguration';
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<FirebaseApp>(

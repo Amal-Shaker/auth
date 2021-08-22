@@ -1,3 +1,4 @@
+import 'package:chat_app_with_firebase/Auth/helper/shared_helper.dart';
 import 'package:chat_app_with_firebase/Auth/providers/auth_provider.dart';
 import 'package:chat_app_with_firebase/out_services/custom_dialog.dart';
 import 'package:chat_app_with_firebase/out_services/route_helper.dart';
@@ -12,6 +13,7 @@ class AuthHelper {
     try {
       UserCredential userCredential = await firebaseAuth
           .createUserWithEmailAndPassword(email: email, password: password);
+      await SharedHelper.sharedHelper.setId(userCredential.user.uid);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         CustomDialoug.customDialoug
@@ -34,7 +36,9 @@ class AuthHelper {
     try {
       UserCredential userCredential = await firebaseAuth
           .signInWithEmailAndPassword(email: email, password: password);
+
       bool isVerifiedEmail = AuthHelper.authHelper.checkEmailVerification();
+
       if (isVerifiedEmail) {
         RouteHelper.routeHelper.goToPageWithReplacement(Home.routeName);
       } else {

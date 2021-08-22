@@ -26,7 +26,7 @@ class Register extends StatelessWidget {
               CustomTextfield('city', provider.cityController),
               CustomTextfield('country', provider.countryController),
               CustomTextfield('fName', provider.fNmaeController),
-              CustomTextfield('email', provider.lNameController),
+              CustomTextfield('lName', provider.lNameController),
               CustomButton(provider.register, 'Register'),
             ],
           );

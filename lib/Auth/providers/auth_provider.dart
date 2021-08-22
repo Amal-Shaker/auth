@@ -1,5 +1,6 @@
 import 'package:chat_app_with_firebase/Auth/helper/auth_helper.dart';
 import 'package:chat_app_with_firebase/Auth/helper/firestore_helper.dart';
+import 'package:chat_app_with_firebase/Auth/helper/shared_helper.dart';
 import 'package:chat_app_with_firebase/model/register_request.dart';
 import 'package:chat_app_with_firebase/out_services/custom_dialog.dart';
 import 'package:chat_app_with_firebase/out_services/route_helper.dart';
@@ -25,7 +26,7 @@ class AuthProvider extends ChangeNotifier {
       UserCredential userCredential = await AuthHelper.authHelper
           .signup(emailController.text, passwordController.text);
       RegisterRequest registerRequest = RegisterRequest(
-          id: userCredential.user.uid,
+          //   id: userCredential.user.uid,
           email: emailController.text,
           password: passwordController.text,
           city: cityController.text,
@@ -34,8 +35,8 @@ class AuthProvider extends ChangeNotifier {
           lName: lNameController.text);
       await FirestoreHelper.firestoreHelper.addToFirestore(registerRequest);
 
-      await AuthHelper.authHelper.verifyEmail();
-      await AuthHelper.authHelper.logout();
+      // await AuthHelper.authHelper.verifyEmail();
+      // await AuthHelper.authHelper.logout();
       //   tabController.animateTo(1);
     } on Exception catch (e) {
       // TODO
@@ -46,8 +47,10 @@ class AuthProvider extends ChangeNotifier {
   }
 
   login() async {
-    await AuthHelper.authHelper
+    UserCredential userCredential = await AuthHelper.authHelper
         .signin(emailController.text, passwordController.text);
+    await FirestoreHelper.firestoreHelper
+        .getUserFirestore(userCredential.user.uid);
 
     resetControllers();
   }
