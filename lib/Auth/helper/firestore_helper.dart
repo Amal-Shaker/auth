@@ -48,12 +48,19 @@ class FirestoreHelper {
   getAllCountries() async {
     final listOfcountries =
         await firebaseFirestore.collection('countries').get();
-    final countries = listOfcountries.docs.map((e) {
-      Map map = e.data();
-      map['id'] = e.id;
-      CountryModel.fromJson(map);
-    }).toList();
+    final countries = listOfcountries.docs
+        .map((e) => CountryModel.fromJson(e.data()))
+        .toList();
+    // {
+    //   Map map = e.data();
+    //   map['id'] = e.id;
+    //   CountryModel.fromJson(map);
+    // }
+
+    List<CountryModel> cou = countries;
+    print(cou.first.name);
     print(countries.length);
+    print(countries.first.cities);
     return countries;
   }
 }

@@ -14,18 +14,18 @@ void main() {
   runApp(ChangeNotifierProvider<AuthProvider>(
     create: (context) => AuthProvider(),
     child: MaterialApp(
-      debugShowCheckedModeBanner: false,
-      routes: {
-        Login.routeName: (context) => Login(),
-        Register.routeName: (context) => Register(),
-        ForgetPass.routeName: (context) => ForgetPass(),
-        Home.routeName: (context) => Home(),
-        FirebaseConfiguration.routeName: (context) => FirebaseConfiguration()
-      },
-      navigatorKey: RouteHelper.routeHelper.navKey,
-      //home: FirebaseConfiguration()
-      home: FirstClass(),
-    ),
+        debugShowCheckedModeBanner: false,
+        routes: {
+          Login.routeName: (context) => Login(),
+          Register.routeName: (context) => Register(),
+          ForgetPass.routeName: (context) => ForgetPass(),
+          Home.routeName: (context) => Home(),
+          FirebaseConfiguration.routeName: (context) => FirebaseConfiguration()
+        },
+        navigatorKey: RouteHelper.routeHelper.navKey,
+        home: FirebaseConfiguration()
+        // home: FirstClass(),
+        ),
   ));
 }
 

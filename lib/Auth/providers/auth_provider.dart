@@ -16,7 +16,7 @@ class AuthProvider extends ChangeNotifier {
   List<CountryModel> countries;
   List<dynamic> cities = [];
   CountryModel selectedCountry;
-  String selectCity;
+  dynamic selectCity;
   selectCountry(CountryModel countryModel) {
     this.selectedCountry = countryModel;
     this.cities = countryModel.cities;

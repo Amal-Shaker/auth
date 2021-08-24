@@ -20,56 +20,62 @@ class Register extends StatelessWidget {
         backgroundColor: Colors.grey[100],
         appBar: AppBar_widget(),
         body: Consumer<AuthProvider>(builder: (context, provider, x) {
-          return Column(
-            children: [
-              CustomTextfield('email', provider.emailController),
-              CustomTextfield('password', provider.passwordController),
-              CustomTextfield('city', provider.cityController),
-              CustomTextfield('country', provider.countryController),
-              CustomTextfield('fName', provider.fNmaeController),
-              CustomTextfield('lName', provider.lNameController),
-              provider.countries == null
-                  ? Container()
-                  : Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey),
-                        borderRadius: BorderRadius.circular(15),
+          return SingleChildScrollView(
+            child: Column(
+              children: [
+                CustomTextfield('email', provider.emailController),
+                CustomTextfield('password', provider.passwordController),
+                CustomTextfield('city', provider.cityController),
+                CustomTextfield('country', provider.countryController),
+                CustomTextfield('fName', provider.fNmaeController),
+                CustomTextfield('lName', provider.lNameController),
+                provider.countries == null
+                    ? Container(
+                        child: Text('null'),
+                      )
+                    : Container(
+                        margin: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: DropdownButton<CountryModel>(
+                          isExpanded: true,
+                          underline: Container(),
+                          value: provider.selectedCountry,
+                          onChanged: (x) {
+                            provider.selectCountry(x);
+                          },
+                          items: provider.countries.map((e) {
+                            return DropdownMenuItem<CountryModel>(
+                              // child: Text(''),
+                              child: Text(e.name),
+                              value: e,
+                            );
+                          }).toList(),
+                        ),
                       ),
-                      child: DropdownButton<CountryModel>(
-                        items: provider.countries.map((e) {
-                          return DropdownMenuItem<CountryModel>(
-                            child: Text(e.name),
-                            value: provider.selectedCountry,
-                          );
-                        }),
-                        isExpanded: true,
-                        underline: Container(),
-                        value: provider.selectedCountry,
-                        onChanged: (x) {
-                          provider.selectCountry(x);
-                        },
-                      ),
-                    ),
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(15),
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: DropdownButton<dynamic>(
+                    items: provider.cities.map((e) {
+                      return DropdownMenuItem<dynamic>(
+                          child: Text(e), value: e);
+                    }).toList(),
+                    isExpanded: true,
+                    underline: Container(),
+                    value: provider.selectCity,
+                    onChanged: (x) {
+                      provider.selectedCity(x);
+                    },
+                  ),
                 ),
-                child: DropdownButton<dynamic>(
-                  items: provider.cities.map((e) {
-                    return DropdownMenuItem<dynamic>(
-                        child: Text(e), value: provider.selectCity);
-                  }),
-                  isExpanded: true,
-                  underline: Container(),
-                  value: provider.selectCity,
-                  onChanged: (x) {
-                    provider.selectedCity(x);
-                  },
-                ),
-              ),
-              CustomButton(provider.register, 'Register'),
-            ],
+                CustomButton(provider.register, 'Register'),
+              ],
+            ),
           );
           // return Contain_page(
           //   addrestext1: 'Create your',
