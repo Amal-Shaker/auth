@@ -1,6 +1,7 @@
 import 'package:chat_app_with_firebase/Auth/helper/auth_helper.dart';
 import 'package:chat_app_with_firebase/Auth/helper/firestore_helper.dart';
 import 'package:chat_app_with_firebase/Auth/helper/shared_helper.dart';
+import 'package:chat_app_with_firebase/model/countrymodel.dart';
 import 'package:chat_app_with_firebase/model/register_request.dart';
 import 'package:chat_app_with_firebase/out_services/custom_dialog.dart';
 import 'package:chat_app_with_firebase/out_services/route_helper.dart';
@@ -9,6 +10,32 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class AuthProvider extends ChangeNotifier {
+  AuthProvider() {
+    getCountryFromFirestore();
+  }
+  List<CountryModel> countries;
+  List<dynamic> cities = [];
+  CountryModel selectedCountry;
+  String selectCity;
+  selectCountry(CountryModel countryModel) {
+    this.selectedCountry = countryModel;
+    this.cities = countryModel.cities;
+    selectedCity(cities.first.toString());
+    notifyListeners();
+  }
+
+  selectedCity(dynamic city) {
+    this.selectCity = city;
+    notifyListeners();
+  }
+
+  getCountryFromFirestore() async {
+    List<CountryModel> countries =
+        await FirestoreHelper.firestoreHelper.getAllCountries();
+    this.countries = countries;
+    notifyListeners();
+  }
+
   TabController tabController;
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -26,7 +53,7 @@ class AuthProvider extends ChangeNotifier {
       UserCredential userCredential = await AuthHelper.authHelper
           .signup(emailController.text, passwordController.text);
       RegisterRequest registerRequest = RegisterRequest(
-          //   id: userCredential.user.uid,
+          id: userCredential.user.uid,
           email: emailController.text,
           password: passwordController.text,
           city: cityController.text,

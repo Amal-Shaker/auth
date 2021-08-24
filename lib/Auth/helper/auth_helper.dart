@@ -9,13 +9,15 @@ class AuthHelper {
   AuthHelper._();
   static AuthHelper authHelper = AuthHelper._();
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-  signup(String email, String password) async {
+  Future<UserCredential> signup(String email, String password) async {
     try {
       UserCredential userCredential = await firebaseAuth
           .createUserWithEmailAndPassword(email: email, password: password);
+
       await SharedHelper.sharedHelper.setId(userCredential.user.uid);
       print(
           "hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh${await SharedHelper.sharedHelper.getId()}");
+      return userCredential;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         CustomDialoug.customDialoug
@@ -29,7 +31,7 @@ class AuthHelper {
     }
   }
 
-  signin(String email, String password) async {
+  Future<UserCredential> signin(String email, String password) async {
     // UserCredential userCredential = await firebaseAuth
     //     .signInWithEmailAndPassword(email: email, password: password);
     // print(await userCredential.user.getIdToken());
@@ -48,7 +50,7 @@ class AuthHelper {
             'You have to verify your email, press ok to send another email',
             sendVericiafion());
       }
-
+      return userCredential;
       // RouteHelper.routeHelper.goToPage(Home.routeName);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {

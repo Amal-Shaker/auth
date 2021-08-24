@@ -1,5 +1,6 @@
 import 'package:chat_app_with_firebase/Auth/helper/auth_helper.dart';
 import 'package:chat_app_with_firebase/Auth/providers/auth_provider.dart';
+import 'package:chat_app_with_firebase/model/countrymodel.dart';
 import 'package:chat_app_with_firebase/out_services/route_helper.dart';
 import 'package:chat_app_with_firebase/ui/page/login.dart';
 import 'package:chat_app_with_firebase/ui/widgets/appbar.dart';
@@ -27,6 +28,46 @@ class Register extends StatelessWidget {
               CustomTextfield('country', provider.countryController),
               CustomTextfield('fName', provider.fNmaeController),
               CustomTextfield('lName', provider.lNameController),
+              provider.countries == null
+                  ? Container()
+                  : Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: DropdownButton<CountryModel>(
+                        items: provider.countries.map((e) {
+                          return DropdownMenuItem<CountryModel>(
+                            child: Text(e.name),
+                            value: provider.selectedCountry,
+                          );
+                        }),
+                        isExpanded: true,
+                        underline: Container(),
+                        value: provider.selectedCountry,
+                        onChanged: (x) {
+                          provider.selectCountry(x);
+                        },
+                      ),
+                    ),
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey),
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: DropdownButton<dynamic>(
+                  items: provider.cities.map((e) {
+                    return DropdownMenuItem<dynamic>(
+                        child: Text(e), value: provider.selectCity);
+                  }),
+                  isExpanded: true,
+                  underline: Container(),
+                  value: provider.selectCity,
+                  onChanged: (x) {
+                    provider.selectedCity(x);
+                  },
+                ),
+              ),
               CustomButton(provider.register, 'Register'),
             ],
           );

@@ -1,3 +1,4 @@
+import 'package:chat_app_with_firebase/model/countrymodel.dart';
 import 'package:chat_app_with_firebase/model/register_request.dart';
 import 'package:chat_app_with_firebase/model/usermodel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -42,5 +43,17 @@ class FirestoreHelper {
         listOfUser.docs.map((e) => UserModel.fromMap(e.data())).toList();
     print(users.length);
     return users;
+  }
+
+  getAllCountries() async {
+    final listOfcountries =
+        await firebaseFirestore.collection('countries').get();
+    final countries = listOfcountries.docs.map((e) {
+      Map map = e.data();
+      map['id'] = e.id;
+      CountryModel.fromJson(map);
+    }).toList();
+    print(countries.length);
+    return countries;
   }
 }
