@@ -23,10 +23,26 @@ class Register extends StatelessWidget {
           return SingleChildScrollView(
             child: Column(
               children: [
+                GestureDetector(
+                  onTap: () {
+                    provider.selectFile();
+                  },
+                  child: Container(
+                    height: 200,
+                    width: 200,
+                    color: Colors.grey,
+                    child: provider.file == null
+                        ? Container()
+                        : Image.file(
+                            provider.file,
+                            fit: BoxFit.cover,
+                          ),
+                  ),
+                ),
                 CustomTextfield('email', provider.emailController),
                 CustomTextfield('password', provider.passwordController),
-                CustomTextfield('city', provider.cityController),
-                CustomTextfield('country', provider.countryController),
+                // CustomTextfield('city', provider.cityController),
+                // CustomTextfield('country', provider.countryController),
                 CustomTextfield('fName', provider.fNmaeController),
                 CustomTextfield('lName', provider.lNameController),
                 provider.countries == null

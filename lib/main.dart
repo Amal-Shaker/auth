@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import 'Auth/providers/auth_provider.dart';
 import 'out_services/route_helper.dart';
 
+//flutter_radio_player  ====> package to play sound
 void main() {
   runApp(ChangeNotifierProvider<AuthProvider>(
     create: (context) => AuthProvider(),
