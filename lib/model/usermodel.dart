@@ -7,14 +7,15 @@ class UserModel {
   String country;
   String fName;
   String lName;
-  UserModel({
-    this.id,
-    this.email,
-    this.city,
-    this.country,
-    this.fName,
-    this.lName,
-  });
+  String imageUrl;
+  UserModel(
+      {this.id,
+      this.email,
+      this.city,
+      this.country,
+      this.fName,
+      this.lName,
+      this.imageUrl});
 
   UserModel.fromMap(Map map) {
     this.id = map['id'];
@@ -23,5 +24,6 @@ class UserModel {
     this.country = map['country'];
     this.fName = map['fName'];
     this.lName = map['lName'];
+    this.imageUrl = map['imageUrl'];
   }
 }

@@ -6,6 +6,7 @@ import 'package:chat_app_with_firebase/Auth/helper/firestore_helper.dart';
 import 'package:chat_app_with_firebase/Auth/helper/shared_helper.dart';
 import 'package:chat_app_with_firebase/model/countrymodel.dart';
 import 'package:chat_app_with_firebase/model/register_request.dart';
+import 'package:chat_app_with_firebase/model/usermodel.dart';
 import 'package:chat_app_with_firebase/out_services/custom_dialog.dart';
 import 'package:chat_app_with_firebase/out_services/route_helper.dart';
 import 'package:chat_app_with_firebase/ui/page/HomePage.dart';
@@ -49,6 +50,14 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  UserModel user;
+  getUserFromFirestore() async {
+    String userId = AuthHelper.authHelper.getUserId();
+    user =
+        await FirestoreHelper.firestoreHelper.getAllUserFromFirestore(userId);
+    notifyListeners();
+  }
+
   TabController tabController;
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -63,12 +72,12 @@ class AuthProvider extends ChangeNotifier {
 
   register() async {
     try {
-      UserCredential userCredential = await AuthHelper.authHelper
+      var userCredential = await AuthHelper.authHelper
           .signup(emailController.text, passwordController.text);
 
       // print("frommmm auth provider${userCredential.user.uid}");
 
-      // String id = userCredential.user.uid;
+      //  String id = userCredential.user.uid;
       String imageUrl =
           await FirestorgeHelper.firestorgeHelper.uploadImage(file);
       RegisterRequest registerRequest = RegisterRequest(

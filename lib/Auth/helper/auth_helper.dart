@@ -9,6 +9,10 @@ class AuthHelper {
   AuthHelper._();
   static AuthHelper authHelper = AuthHelper._();
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  String getUserId() {
+    return firebaseAuth.currentUser.uid;
+  }
+
   Future<UserCredential> signup(String email, String password) async {
     try {
       UserCredential userCredential = await firebaseAuth

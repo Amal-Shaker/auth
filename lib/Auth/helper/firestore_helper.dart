@@ -31,18 +31,24 @@ class FirestoreHelper {
   //   print(users.length);
   //   // return users;
   // }
-  Future<List<UserModel>> getAllUsersFromFirestore() async {
-    // QuerySnapshot<Map<String, dynamic>> querySnapshot =
-    //     await firebaseFirestore.collection('Users').get();
-    // List<QueryDocumentSnapshot<Map<String, dynamic>>> docs = querySnapshot.docs;
-    // List<UserModel> users =
-    //     docs.map((e) => UserModel.fromMap(e.data())).toList();
-    // print(users.length);
-    final listOfUser = await firebaseFirestore.collection('Users').get();
-    final users =
-        listOfUser.docs.map((e) => UserModel.fromMap(e.data())).toList();
-    print(users.length);
-    return users;
+  // Future<List<UserModel>> getAllUsersFromFirestore() async {
+  //   // QuerySnapshot<Map<String, dynamic>> querySnapshot =
+  //   //     await firebaseFirestore.collection('Users').get();
+  //   // List<QueryDocumentSnapshot<Map<String, dynamic>>> docs = querySnapshot.docs;
+  //   // List<UserModel> users =
+  //   //     docs.map((e) => UserModel.fromMap(e.data())).toList();
+  //   // print(users.length);
+  //   final listOfUser = await firebaseFirestore.collection('Users').get();
+  //   final users =
+  //       listOfUser.docs.map((e) => UserModel.fromMap(e.data())).toList();
+  //   print(users.length);
+  //   return users;
+  // }
+
+  Future<UserModel> getAllUserFromFirestore(String userId) async {
+    DocumentSnapshot documentSnapshot =
+        await firebaseFirestore.collection('Users').doc(userId).get();
+    return UserModel.fromMap(documentSnapshot.data());
   }
 
   getAllCountries() async {
