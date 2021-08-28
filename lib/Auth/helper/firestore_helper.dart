@@ -16,11 +16,11 @@ class FirestoreHelper {
         .set(registerRequest.toMap());
   }
 
-  getUserFirestore(String userId) async {
-    DocumentSnapshot documentSnapshot =
-        await firebaseFirestore.collection('Users').doc(userId).get();
-    print(documentSnapshot.data());
-  }
+  // getUserFirestore(String userId) async {
+  //   DocumentSnapshot documentSnapshot =
+  //       await firebaseFirestore.collection('Users').doc(userId).get();
+  //   print(documentSnapshot.data());
+  // }
 
   // Future<List<UserModel>> getAllUsersFromFirestore() async {
   //   QuerySnapshot<Map<String, dynamic>> querySnapshot =
@@ -48,6 +48,8 @@ class FirestoreHelper {
   Future<UserModel> getAllUserFromFirestore(String userId) async {
     DocumentSnapshot documentSnapshot =
         await firebaseFirestore.collection('Users').doc(userId).get();
+    print(
+        "documentSnapshotdocumentSnapshotdocumentSnapshot${documentSnapshot.data()}");
     return UserModel.fromMap(documentSnapshot.data());
   }
 
@@ -68,5 +70,12 @@ class FirestoreHelper {
     print(countries.length);
     print(countries.first.cities);
     return countries;
+  }
+
+  updateProfile(UserModel userModel) async {
+    await firebaseFirestore
+        .collection('Users')
+        .doc(userModel.id)
+        .update(userModel.toMap());
   }
 }

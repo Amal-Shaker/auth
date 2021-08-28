@@ -1,4 +1,6 @@
 import 'package:chat_app_with_firebase/Auth/providers/auth_provider.dart';
+import 'package:chat_app_with_firebase/chat/update_profile.dart';
+import 'package:chat_app_with_firebase/out_services/route_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -22,27 +24,39 @@ class _ProfilePageState extends State<ProfilePage> {
       appBar: AppBar(
         title: Text('ProfilePage'),
         actions: [
-          IconButton(onPressed: () {}, icon: Icon(Icons.edit)),
+          IconButton(
+              onPressed: () {
+                Provider.of<AuthProvider>(context, listen: false)
+                    .fillControllers();
+                RouteHelper.routeHelper.goToPage(UpdateProfile.routeName);
+              },
+              icon: Icon(Icons.edit)),
           IconButton(onPressed: () {}, icon: Icon(Icons.logout))
         ],
       ),
       body: Consumer<AuthProvider>(
         builder: (context, provider, x) {
           return provider.user == null
-              ? Container()
-              : Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    CircleAvatar(
-                      radius: 80,
-                      backgroundImage: NetworkImage(provider.user.imageUrl),
-                    ),
-                    ItemWidget("First Name", provider.user.fName),
-                    ItemWidget("Last Name", provider.user.lName),
-                    ItemWidget("Country", provider.user.country),
-                    ItemWidget("City", provider.user.city),
-                    ItemWidget("Email", provider.user.email),
-                  ],
+              ? Container(
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                )
+              : SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      CircleAvatar(
+                        radius: 80,
+                        backgroundImage: NetworkImage(provider.user.imageUrl),
+                      ),
+                      ItemWidget("First Name", provider.user.fName),
+                      ItemWidget("Last Name", provider.user.lName),
+                      ItemWidget("Country", provider.user.country),
+                      ItemWidget("City", provider.user.city),
+                      ItemWidget("Email", provider.user.email),
+                    ],
+                  ),
                 );
         },
       ),
@@ -58,9 +72,19 @@ class ItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: EdgeInsets.all(10),
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+      decoration: BoxDecoration(
+          color: Colors.white, borderRadius: BorderRadius.circular(15)),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [Text(label), Text(value)],
+        children: [
+          Text(
+            label,
+            style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+          ),
+          Text(value, style: TextStyle(fontSize: 22))
+        ],
       ),
     );
   }

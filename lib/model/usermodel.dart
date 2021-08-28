@@ -26,4 +26,15 @@ class UserModel {
     this.lName = map['lName'];
     this.imageUrl = map['imageUrl'];
   }
+  toMap() {
+    return {
+      'id': this.id,
+      'email': this.email,
+      'city': this.city,
+      'country': this.country,
+      'fName': this.fName,
+      'lName': this.lName,
+      'imageUrl': this.imageUrl
+    };
+  }
 }

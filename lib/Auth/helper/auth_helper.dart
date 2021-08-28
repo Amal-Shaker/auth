@@ -1,5 +1,6 @@
 import 'package:chat_app_with_firebase/Auth/helper/shared_helper.dart';
 import 'package:chat_app_with_firebase/Auth/providers/auth_provider.dart';
+import 'package:chat_app_with_firebase/chat/profile.dart';
 import 'package:chat_app_with_firebase/out_services/custom_dialog.dart';
 import 'package:chat_app_with_firebase/out_services/route_helper.dart';
 import 'package:chat_app_with_firebase/ui/page/HomePage.dart';
@@ -47,16 +48,17 @@ class AuthHelper {
     try {
       UserCredential userCredential = await firebaseAuth
           .signInWithEmailAndPassword(email: email, password: password);
+      RouteHelper.routeHelper.goToPage(ProfilePage.routeName);
 
-      bool isVerifiedEmail = AuthHelper.authHelper.checkEmailVerification();
+      // bool isVerifiedEmail = AuthHelper.authHelper.checkEmailVerification();
 
-      if (isVerifiedEmail) {
-        RouteHelper.routeHelper.goToPageWithReplacement(Home.routeName);
-      } else {
-        CustomDialoug.customDialoug.showCustomDialoug(
-            'You have to verify your email, press ok to send another email',
-            sendVericiafion());
-      }
+      // if (isVerifiedEmail) {
+      //   RouteHelper.routeHelper.goToPageWithReplacement(Home.routeName);
+      // } else {
+      //   CustomDialoug.customDialoug.showCustomDialoug(
+      //       'You have to verify your email, press ok to send another email',
+      //       sendVericiafion());
+      // }
       return userCredential;
       // RouteHelper.routeHelper.goToPage(Home.routeName);
     } on FirebaseAuthException catch (e) {
@@ -95,5 +97,13 @@ class AuthHelper {
   sendVericiafion() {
     AuthHelper.authHelper.verifyEmail();
     AuthHelper.authHelper.logout();
+  }
+
+  bool checkLogin() {
+    if (firebaseAuth.currentUser == null) {
+      return false;
+    } else {
+      return true;
+    }
   }
 }
