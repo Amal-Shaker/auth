@@ -1,3 +1,4 @@
+import 'package:chat_app_with_firebase/Auth/helper/auth_helper.dart';
 import 'package:chat_app_with_firebase/model/countrymodel.dart';
 import 'package:chat_app_with_firebase/model/register_request.dart';
 import 'package:chat_app_with_firebase/model/usermodel.dart';
@@ -31,19 +32,19 @@ class FirestoreHelper {
   //   print(users.length);
   //   // return users;
   // }
-  // Future<List<UserModel>> getAllUsersFromFirestore() async {
-  //   // QuerySnapshot<Map<String, dynamic>> querySnapshot =
-  //   //     await firebaseFirestore.collection('Users').get();
-  //   // List<QueryDocumentSnapshot<Map<String, dynamic>>> docs = querySnapshot.docs;
-  //   // List<UserModel> users =
-  //   //     docs.map((e) => UserModel.fromMap(e.data())).toList();
-  //   // print(users.length);
-  //   final listOfUser = await firebaseFirestore.collection('Users').get();
-  //   final users =
-  //       listOfUser.docs.map((e) => UserModel.fromMap(e.data())).toList();
-  //   print(users.length);
-  //   return users;
-  // }
+  Future<List<UserModel>> getAllUsersFromFirestore() async {
+    // QuerySnapshot<Map<String, dynamic>> querySnapshot =
+    //     await firebaseFirestore.collection('Users').get();
+    // List<QueryDocumentSnapshot<Map<String, dynamic>>> docs = querySnapshot.docs;
+    // List<UserModel> users =
+    //     docs.map((e) => UserModel.fromMap(e.data())).toList();
+    // print(users.length);
+    final listOfUser = await firebaseFirestore.collection('Users').get();
+    final users =
+        listOfUser.docs.map((e) => UserModel.fromMap(e.data())).toList();
+    print(users.length);
+    return users;
+  }
 
   Future<UserModel> getAllUserFromFirestore(String userId) async {
     DocumentSnapshot documentSnapshot =
@@ -77,5 +78,15 @@ class FirestoreHelper {
         .collection('Users')
         .doc(userModel.id)
         .update(userModel.toMap());
+  }
+
+  addMessageToFirestore(Map map) async {
+    firebaseFirestore
+        .collection('Chats')
+        .add({...map, 'userId': AuthHelper.authHelper.getUserId()});
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> getFirestoreStream() {
+    return firebaseFirestore.collection('Chats').snapshots();
   }
 }

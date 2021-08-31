@@ -4,6 +4,8 @@ import 'package:chat_app_with_firebase/Auth/helper/auth_helper.dart';
 import 'package:chat_app_with_firebase/Auth/helper/firestorage_helper.dart';
 import 'package:chat_app_with_firebase/Auth/helper/firestore_helper.dart';
 import 'package:chat_app_with_firebase/Auth/helper/shared_helper.dart';
+import 'package:chat_app_with_firebase/chat/alluser.dart';
+import 'package:chat_app_with_firebase/chat/chat_page.dart';
 import 'package:chat_app_with_firebase/chat/profile.dart';
 import 'package:chat_app_with_firebase/model/countrymodel.dart';
 import 'package:chat_app_with_firebase/model/register_request.dart';
@@ -20,6 +22,7 @@ class AuthProvider extends ChangeNotifier {
   AuthProvider() {
     getCountryFromFirestore();
   }
+  List<UserModel> users;
   List<CountryModel> countries;
   List<dynamic> cities = [];
   CountryModel selectedCountry;
@@ -121,10 +124,19 @@ class AuthProvider extends ChangeNotifier {
     resetControllers();
   }
 
+  getAllUsers() async {
+    users = await FirestoreHelper.firestoreHelper.getAllUsersFromFirestore();
+
+    notifyListeners();
+  }
+
   checkLogin() {
     bool isLogining = AuthHelper.authHelper.checkLogin();
+    getAllUsers();
     if (isLogining) {
-      RouteHelper.routeHelper.goToPageWithReplacement(ProfilePage.routeName);
+      //  RouteHelper.routeHelper.goToPageWithReplacement(ProfilePage.routeName);
+      // RouteHelper.routeHelper.goToPageWithReplacement(AllUser.routeName);
+      RouteHelper.routeHelper.goToPageWithReplacement(ChatPage.routeName);
     } else {
       RouteHelper.routeHelper.goToPageWithReplacement(Login.routeName);
     }

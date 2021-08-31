@@ -11,6 +11,8 @@ class AuthHelper {
   static AuthHelper authHelper = AuthHelper._();
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   String getUserId() {
+    print(
+        "getUserIdgetUserIdgetUserIdgetUserIdgetUserIdgetUserId${firebaseAuth.currentUser.uid}");
     return firebaseAuth.currentUser.uid;
   }
 

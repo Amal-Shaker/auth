@@ -1,6 +1,10 @@
 import 'package:chat_app_with_firebase/Auth/helper/shared_helper.dart';
+import 'package:chat_app_with_firebase/chat/alluser.dart';
+import 'package:chat_app_with_firebase/chat/chat_page.dart';
 import 'package:chat_app_with_firebase/chat/profile.dart';
+
 import 'package:chat_app_with_firebase/chat/update_profile.dart';
+import 'package:chat_app_with_firebase/chat/user.dart';
 import 'package:chat_app_with_firebase/ui/page/HomePage.dart';
 import 'package:chat_app_with_firebase/ui/page/login.dart';
 import 'package:chat_app_with_firebase/ui/page/register.dart';
@@ -26,6 +30,10 @@ void main() {
           Home.routeName: (context) => Home(),
           ProfilePage.routeName: (context) => ProfilePage(),
           UpdateProfile.routeName: (context) => UpdateProfile(),
+          AllUser.routeName: (context) => AllUser(),
+          ChatPage.routeName: (context) => ChatPage(),
+          //UserPage.: (context) => UpdateProfile(),
+
           FirebaseConfiguration.routeName: (context) => FirebaseConfiguration()
         },
         navigatorKey: RouteHelper.routeHelper.navKey,

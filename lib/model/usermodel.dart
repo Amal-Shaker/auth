@@ -27,14 +27,23 @@ class UserModel {
     this.imageUrl = map['imageUrl'];
   }
   toMap() {
-    return {
-      'id': this.id,
-      'email': this.email,
-      'city': this.city,
-      'country': this.country,
-      'fName': this.fName,
-      'lName': this.lName,
-      'imageUrl': this.imageUrl
-    };
+    return imageUrl == null
+        ? {
+            'id': this.id, //
+            'email': this.email, //
+            'city': this.city,
+            'country': this.country,
+            'fName': this.fName,
+            'lName': this.lName,
+          }
+        : {
+            'id': this.id, //
+            'email': this.email, //
+            'city': this.city,
+            'country': this.country,
+            'fName': this.fName,
+            'lName': this.lName,
+            'imageUrl': this.imageUrl
+          };
   }
 }
