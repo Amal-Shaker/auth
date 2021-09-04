@@ -1,3 +1,4 @@
+import 'package:chat_app_with_firebase/Auth/helper/auth_helper.dart';
 import 'package:chat_app_with_firebase/Auth/providers/auth_provider.dart';
 import 'package:chat_app_with_firebase/chat/update_profile.dart';
 import 'package:chat_app_with_firebase/out_services/route_helper.dart';
@@ -22,6 +23,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       backgroundColor: Colors.grey[300],
       appBar: AppBar(
+        backgroundColor: Colors.red[400],
         title: Text('ProfilePage'),
         actions: [
           IconButton(
@@ -31,7 +33,11 @@ class _ProfilePageState extends State<ProfilePage> {
                 RouteHelper.routeHelper.goToPage(UpdateProfile.routeName);
               },
               icon: Icon(Icons.edit)),
-          IconButton(onPressed: () {}, icon: Icon(Icons.logout))
+          IconButton(
+              onPressed: () {
+                Provider.of<AuthProvider>(context, listen: false).logout();
+              },
+              icon: Icon(Icons.logout))
         ],
       ),
       body: Consumer<AuthProvider>(
@@ -39,7 +45,9 @@ class _ProfilePageState extends State<ProfilePage> {
           return provider.user == null
               ? Container(
                   child: Center(
-                    child: CircularProgressIndicator(),
+                    child: CircularProgressIndicator(
+                      backgroundColor: Colors.red[400],
+                    ),
                   ),
                 )
               : SingleChildScrollView(
@@ -48,6 +56,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     children: [
                       CircleAvatar(
                         radius: 80,
+                        backgroundColor: Colors.red[400],
                         backgroundImage: NetworkImage(provider.user.imageUrl),
                       ),
                       ItemWidget("First Name", provider.user.fName),

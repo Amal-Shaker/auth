@@ -10,10 +10,19 @@ class AuthHelper {
   AuthHelper._();
   static AuthHelper authHelper = AuthHelper._();
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  bool checkLogin() {
+    if (firebaseAuth.currentUser == null) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   String getUserId() {
-    print(
-        "getUserIdgetUserIdgetUserIdgetUserIdgetUserIdgetUserId${firebaseAuth.currentUser.uid}");
+    // print(
+    //     "getUserIdgetUserIdgetUserIdgetUserIdgetUserIdgetUserId${firebaseAuth.currentUser.uid}");
     return firebaseAuth.currentUser.uid;
+    //return '2PqNaS0ph2ebZS6KpqZw8FEC3Sp2';
   }
 
   Future<UserCredential> signup(String email, String password) async {
@@ -50,7 +59,7 @@ class AuthHelper {
     try {
       UserCredential userCredential = await firebaseAuth
           .signInWithEmailAndPassword(email: email, password: password);
-      RouteHelper.routeHelper.goToPage(ProfilePage.routeName);
+      //RouteHelper.routeHelper.goToPage(ProfilePage.routeName);
 
       // bool isVerifiedEmail = AuthHelper.authHelper.checkEmailVerification();
 
@@ -101,11 +110,7 @@ class AuthHelper {
     AuthHelper.authHelper.logout();
   }
 
-  bool checkLogin() {
-    if (firebaseAuth.currentUser == null) {
-      return false;
-    } else {
-      return true;
-    }
+  signout() async {
+    await firebaseAuth.signOut();
   }
 }

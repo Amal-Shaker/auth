@@ -89,4 +89,21 @@ class FirestoreHelper {
   Stream<QuerySnapshot<Map<String, dynamic>>> getFirestoreStream() {
     return firebaseFirestore.collection('Chats').snapshots();
   }
+
+  addMessageChatRoom(Map map, String twoId) async {
+    firebaseFirestore
+        .collection('Chat')
+        .doc(twoId)
+        .collection('chatRoom')
+        .add({...map, 'From': AuthHelper.authHelper.getUserId()});
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> getFirestoreStreamChatRoom(
+      String twoId) {
+    return firebaseFirestore
+        .collection('Chat')
+        .doc(twoId)
+        .collection('chatRoom')
+        .snapshots();
+  }
 }

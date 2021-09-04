@@ -14,6 +14,7 @@ import 'package:chat_app_with_firebase/out_services/custom_dialog.dart';
 import 'package:chat_app_with_firebase/out_services/route_helper.dart';
 import 'package:chat_app_with_firebase/ui/page/HomePage.dart';
 import 'package:chat_app_with_firebase/ui/page/login.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -22,6 +23,20 @@ class AuthProvider extends ChangeNotifier {
   AuthProvider() {
     getCountryFromFirestore();
   }
+  String myId;
+  checkLogin() {
+    bool isLogining = AuthHelper.authHelper.checkLogin();
+    getAllUsers();
+    if (isLogining) {
+      this.myId = AuthHelper.authHelper.getUserId();
+      //RouteHelper.routeHelper.goToPageWithReplacement(ProfilePage.routeName);
+      RouteHelper.routeHelper.goToPageWithReplacement(AllUser.routeName);
+      // RouteHelper.routeHelper.goToPageWithReplacement(ChatPage.routeName);
+    } else {
+      RouteHelper.routeHelper.goToPageWithReplacement(Login.routeName);
+    }
+  }
+
   List<UserModel> users;
   List<CountryModel> countries;
   List<dynamic> cities = [];
@@ -110,7 +125,7 @@ class AuthProvider extends ChangeNotifier {
   login() async {
     UserCredential userCredential = await AuthHelper.authHelper
         .signin(emailController.text.trim(), passwordController.text.trim());
-    RouteHelper.routeHelper.goToPage(ProfilePage.routeName);
+    RouteHelper.routeHelper.goToPage(AllUser.routeName);
     print("pppppppppppppppppppppp${userCredential.user.uid}");
 
     await FirestoreHelper.firestoreHelper
@@ -128,18 +143,6 @@ class AuthProvider extends ChangeNotifier {
     users = await FirestoreHelper.firestoreHelper.getAllUsersFromFirestore();
 
     notifyListeners();
-  }
-
-  checkLogin() {
-    bool isLogining = AuthHelper.authHelper.checkLogin();
-    getAllUsers();
-    if (isLogining) {
-      //  RouteHelper.routeHelper.goToPageWithReplacement(ProfilePage.routeName);
-      // RouteHelper.routeHelper.goToPageWithReplacement(AllUser.routeName);
-      RouteHelper.routeHelper.goToPageWithReplacement(ChatPage.routeName);
-    } else {
-      RouteHelper.routeHelper.goToPageWithReplacement(Login.routeName);
-    }
   }
 
   File updatedFile;
@@ -183,5 +186,45 @@ class AuthProvider extends ChangeNotifier {
     lNameController.text = user.lName;
     countryController.text = user.country;
     cityController.text = user.city;
+  }
+
+  sendImageToChats([String message]) async {
+    XFile file = await ImagePicker().pickImage(source: ImageSource.gallery);
+    String imageUrl = await FirestorgeHelper.firestorgeHelper
+        .uploadImage(File(file.path), 'chats');
+    FirestoreHelper.firestoreHelper.addMessageToFirestore({
+      'userId': this.myId,
+      'dateTime': DateTime.now(),
+      //'message': message ?? '',
+      'imageUrl': imageUrl
+    });
+  }
+
+  sendImageToChatRoom(String twoId, [String message]) async {
+    XFile file = await ImagePicker().pickImage(source: ImageSource.gallery);
+    String imageUrl = await FirestorgeHelper.firestorgeHelper
+        .uploadImage(File(file.path), 'chats');
+    FirestoreHelper.firestoreHelper.addMessageChatRoom({
+      'userId': this.myId,
+      'dateTime': DateTime.now(),
+      //'message': message ?? '',
+      'imageUrl': imageUrl
+    }, twoId);
+  }
+
+  sendAudioToChats(File file) async {
+    // XFile file = await ImagePicker().pickImage(source: ImageSource.gallery);
+    String audioUrl =
+        await FirestorgeHelper.firestorgeHelper.uploadAudio(File(file.path));
+    FirestoreHelper.firestoreHelper.addMessageToFirestore({
+      'userId': this.myId,
+      'dateTime': DateTime.now(),
+      'audioUrl': audioUrl
+    });
+  }
+
+  logout() async {
+    await AuthHelper.authHelper.logout();
+    RouteHelper.routeHelper.goToPageWithReplacement(Login.routeName);
   }
 }

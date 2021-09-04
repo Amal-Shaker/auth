@@ -9,6 +9,7 @@ class UpdateProfile extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.grey[300],
       appBar: AppBar(
+        backgroundColor: Colors.red[400],
         title: Text('Update profile'),
         actions: [
           IconButton(
