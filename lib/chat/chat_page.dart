@@ -31,135 +31,13 @@ class _ChatPageState extends State<ChatPage> {
         {'message': this.message, 'dateTime': DateTime.now()});
   }
 
-  bool isPlaying = false;
   ScrollController scrollController = ScrollController();
 
   TextEditingController value = TextEditingController();
   String recordFilePath;
 
   String message;
-  bool isPlayingMsg = false, isRecording = false, isSending = false;
   int i = 0;
-  Future<String> getFilePath() async {
-    Directory storageDirectory = await getApplicationDocumentsDirectory();
-    String sdPath = storageDirectory.path + "/record";
-    var d = Directory(sdPath);
-    if (!d.existsSync()) {
-      d.createSync(recursive: true);
-    }
-    return sdPath + "/test_${i++}.mp3";
-  }
-
-  // String stval;
-  // uploadAudio() async {
-  //   stval = await FirestorgeHelper.firestorgeHelper
-  //       .uploadAudio(File(recordFilePath));
-  //   await sendAudioMsg(stval);
-  // }
-
-  Future<void> play(String path) async {
-    print('before if');
-
-    // && File(path).existsSync()
-    if (path != null) {
-      AudioPlayer audioPlayer = AudioPlayer();
-      // setState(() {
-      //   this.isPlaying = true;
-      // });
-      print('before play');
-      await audioPlayer.play(
-        path,
-        isLocal: true,
-      );
-      // setState(() {
-      // //  this.isPlaying = false;
-      // });
-      // audioPlayer.
-      print('after play');
-    }
-  }
-  // Future _loadFile(String url) async {
-  //   final bytes = await readBytes(url);
-  //   final dir = await getApplicationDocumentsDirectory();
-  //   final file = File('${dir.path}/audio.mp3');
-
-  //   await file.writeAsBytes(bytes);
-  //   if (await file.exists()) {
-  //     setState(() {
-  //       recordFilePath = file.path;
-  //       isPlayingMsg = true;
-  //       print(isPlayingMsg);
-  //     });
-  //     await play();
-  //     setState(() {
-  //       isPlayingMsg = false;
-  //       print(isPlayingMsg);
-  //     });
-  //   }
-  // }
-
-  // sendAudioMsg(String audioMsg) async {
-  //   print('audiooooooooooooooooo $audioMsg');
-  //   if (audioMsg.isNotEmpty) {
-  //     var ref = FirebaseFirestore.instance.collection('Chats').doc();
-  //     await FirebaseFirestore.instance.runTransaction((transaction) async {
-  //       await transaction.set(ref, {
-  //         "userId": AuthHelper.authHelper.getUserId(),
-  //         "timestamp": DateTime.now(),
-  //         "audio": audioMsg,
-  //         "type": 'audio'
-  //       });
-  //     }).then((value) {
-  //       setState(() {
-  //         isSending = false;
-  //       });
-  //     });
-  //     scrollController.animateTo(0.0,
-  //         duration: Duration(milliseconds: 100), curve: Curves.bounceInOut);
-  //   } else {
-  //     print("Hello");
-  //   }
-  // }
-
-  Future<bool> checkPermission() async {
-    if (!await Permission.microphone.isGranted) {
-      PermissionStatus status = await Permission.microphone.request();
-      if (status != PermissionStatus.granted) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  void startRecord() async {
-    bool hasPermission = await checkPermission();
-    if (hasPermission) {
-      recordFilePath = await getFilePath();
-
-      RecordMp3.instance.start(recordFilePath, (type) {
-        setState(() {});
-      });
-    } else {}
-    setState(() {});
-  }
-
-  void stopRecord() async {
-    bool s = RecordMp3.instance.stop();
-    if (s) {
-      setState(() {
-        isSending = true;
-      });
-      // await FirestorgeHelper.firestorgeHelper.uploadAudio(recordFilePath);
-      await Provider.of<AuthProvider>(context, listen: false)
-          .sendAudioToChats(File(recordFilePath));
-    } else {
-      print('NO thing done');
-    }
-
-    setState(() {
-      isPlayingMsg = false;
-    });
-  }
 
   String currentRecord;
   @override
@@ -204,7 +82,6 @@ class _ChatPageState extends State<ChatPage> {
                           controller: scrollController,
                           itemCount: messages.length,
                           itemBuilder: (context, index) {
-//this.currentRecord = messages[index]['userId'];
                             return messages[index]['userId'] ==
                                     AuthHelper.authHelper.getUserId().trim()
                                 ? Container(
@@ -218,7 +95,6 @@ class _ChatPageState extends State<ChatPage> {
                                     padding: EdgeInsets.all(10),
                                     margin: EdgeInsets.only(
                                         top: 10, bottom: 10, right: 80),
-                                    // height: 40,
                                     decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(15),
                                         color: Colors.red[400]),
@@ -242,16 +118,9 @@ class _ChatPageState extends State<ChatPage> {
                                                 children: [
                                                   IconButton(
                                                       onPressed: () {
-                                                        // setState(() {
-                                                        //   this.currentRecord =
-                                                        //       messages[index]
-                                                        //           ['userId'];
-                                                        // });
-
-                                                        // print(messages[index]
-                                                        //     ['userId']);
-                                                        play(messages[index]
-                                                            ['audioUrl']);
+                                                        provider.play(
+                                                            messages[index]
+                                                                ['audioUrl']);
                                                       },
                                                       icon: Icon(Icons.stop)),
                                                 ],
@@ -285,16 +154,9 @@ class _ChatPageState extends State<ChatPage> {
                                                 children: [
                                                   IconButton(
                                                       onPressed: () {
-                                                        // setState(() {
-                                                        //   this.currentRecord =
-                                                        //       messages[index]
-                                                        //           ['userId'];
-                                                        // });
-
-                                                        // print(messages[index]
-                                                        //     ['userId']);
-                                                        play(messages[index]
-                                                            ['audioUrl']);
+                                                        provider.play(
+                                                            messages[index]
+                                                                ['audioUrl']);
                                                       },
                                                       icon: Icon(Icons.stop)),
                                                 ],
@@ -347,16 +209,10 @@ class _ChatPageState extends State<ChatPage> {
                     Container(
                       child: GestureDetector(
                         onLongPress: () {
-                          startRecord();
-                          setState(() {
-                            isRecording = true;
-                          });
+                          provider.startRecord();
                         },
                         onLongPressEnd: (details) {
-                          stopRecord();
-                          setState(() {
-                            isRecording = false;
-                          });
+                          provider.stopRecord(provider.recordPath);
                         },
                         child: Container(
                           child: Icon(Icons.mic),

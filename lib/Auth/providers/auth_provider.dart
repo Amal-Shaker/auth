@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:audioplayer/audioplayer.dart';
 import 'package:chat_app_with_firebase/Auth/helper/auth_helper.dart';
 import 'package:chat_app_with_firebase/Auth/helper/firestorage_helper.dart';
 import 'package:chat_app_with_firebase/Auth/helper/firestore_helper.dart';
@@ -18,6 +19,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:record_mp3/record_mp3.dart';
 
 class AuthProvider extends ChangeNotifier {
   AuthProvider() {
@@ -76,6 +80,7 @@ class AuthProvider extends ChangeNotifier {
     print(userId);
     user =
         await FirestoreHelper.firestoreHelper.getAllUserFromFirestore(userId);
+
     notifyListeners();
   }
 
@@ -141,6 +146,7 @@ class AuthProvider extends ChangeNotifier {
 
   getAllUsers() async {
     users = await FirestoreHelper.firestoreHelper.getAllUsersFromFirestore();
+    users.removeWhere((e) => e.id == myId);
 
     notifyListeners();
   }
@@ -193,19 +199,20 @@ class AuthProvider extends ChangeNotifier {
     String imageUrl = await FirestorgeHelper.firestorgeHelper
         .uploadImage(File(file.path), 'chats');
     FirestoreHelper.firestoreHelper.addMessageToFirestore({
-      'userId': this.myId,
+      // 'userId': this.myId,
       'dateTime': DateTime.now(),
       //'message': message ?? '',
       'imageUrl': imageUrl
     });
   }
 
-  sendImageToChatRoom(String twoId, [String message]) async {
+  sendImageToChatRoom(String twoId, String toId, [String message]) async {
     XFile file = await ImagePicker().pickImage(source: ImageSource.gallery);
     String imageUrl = await FirestorgeHelper.firestorgeHelper
         .uploadImage(File(file.path), 'chats');
     FirestoreHelper.firestoreHelper.addMessageChatRoom({
-      'userId': this.myId,
+      //'userId': this.myId,
+      'toId': toId,
       'dateTime': DateTime.now(),
       //'message': message ?? '',
       'imageUrl': imageUrl
@@ -223,8 +230,82 @@ class AuthProvider extends ChangeNotifier {
     });
   }
 
+  sendAudioToChatRoom(File file, String toId, String twoId) async {
+    // XFile file = await ImagePicker().pickImage(source: ImageSource.gallery);
+    String audioUrl =
+        await FirestorgeHelper.firestorgeHelper.uploadAudio(File(file.path));
+    FirestoreHelper.firestoreHelper.addMessageChatRoom({
+      // 'userId': this.myId,
+      'toId': toId,
+
+      'dateTime': DateTime.now(), 'audioUrl': audioUrl
+    }, twoId);
+  }
+
   logout() async {
     await AuthHelper.authHelper.logout();
     RouteHelper.routeHelper.goToPageWithReplacement(Login.routeName);
+  }
+
+  String recordPath;
+  int i = 0;
+  Future<String> getFilePath() async {
+    Directory storageDirectory = await getApplicationDocumentsDirectory();
+    String sdPath = storageDirectory.path + "/record";
+    var d = Directory(sdPath);
+    if (!d.existsSync()) {
+      d.createSync(recursive: true);
+    }
+    return sdPath + "/test_${i++}.mp3";
+  }
+
+  Future<bool> checkPermission() async {
+    if (!await Permission.microphone.isGranted) {
+      PermissionStatus status = await Permission.microphone.request();
+      if (status != PermissionStatus.granted) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  void startRecord() async {
+    bool hasPermission = await checkPermission();
+    if (hasPermission) {
+      // recordFilePath = await getFilePath();
+      this.recordPath = await getFilePath();
+
+      RecordMp3.instance.start(this.recordPath, (type) {});
+    } else {}
+  }
+
+  void stopRecord(String recordFilePath) async {
+    bool s = RecordMp3.instance.stop();
+    if (s) {
+      await sendAudioToChats(File(recordFilePath));
+    } else {
+      print('NO thing done');
+    }
+  }
+
+  void stopRecordChatRoom(
+      String recordFilePath, String toId, String twoId) async {
+    bool s = RecordMp3.instance.stop();
+    if (s) {
+      await sendAudioToChatRoom(File(recordFilePath), toId, twoId);
+    } else {
+      print('NO thing done');
+    }
+  }
+
+  Future<void> play(String path) async {
+    if (path != null) {
+      AudioPlayer audioPlayer = AudioPlayer();
+
+      await audioPlayer.play(
+        path,
+        isLocal: true,
+      );
+    }
   }
 }

@@ -118,16 +118,33 @@ class _ChatRoomState extends State<ChatRoom> {
                                     decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(15),
                                         color: Colors.red[400]),
-                                    child: messages[index]['imageUrl'] == null
+                                    child: messages[index]['imageUrl'] == null &&
+                                            messages[index]['audioUrl'] == null
                                         ? Text(
                                             "${messages[index]['message']}",
                                             style: TextStyle(
                                                 color: Colors.black38),
                                           )
-                                        : Image.network(
-                                            messages[index]['imageUrl'],
-                                            fit: BoxFit.cover,
-                                          ))
+                                        : messages[index]['message'] == null &&
+                                                messages[index]['audioUrl'] ==
+                                                    null
+                                            ? Image.network(
+                                                messages[index]['imageUrl'],
+                                                fit: BoxFit.cover,
+                                              )
+                                            : Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                children: [
+                                                  IconButton(
+                                                      onPressed: () {
+                                                        provider.play(
+                                                            messages[index]
+                                                                ['audioUrl']);
+                                                      },
+                                                      icon: Icon(Icons.stop)),
+                                                ],
+                                              ))
                                 : Container(
                                     constraints: BoxConstraints(
                                         maxWidth:
@@ -137,22 +154,32 @@ class _ChatRoomState extends State<ChatRoom> {
                                             MediaQuery.of(context).size.height *
                                                 0.3),
                                     padding: EdgeInsets.all(10),
-                                    margin: EdgeInsets.only(
-                                        top: 10, bottom: 10, left: 80),
-                                    decoration: BoxDecoration(
-                                        border: Border.all(color: Colors.black),
-                                        borderRadius: BorderRadius.circular(15),
-                                        color: Colors.white38),
-                                    child: messages[index]['imageUrl'] == null
+                                    margin: EdgeInsets.only(top: 10, bottom: 10, left: 80),
+                                    decoration: BoxDecoration(border: Border.all(color: Colors.black), borderRadius: BorderRadius.circular(15), color: Colors.white38),
+                                    child: messages[index]['imageUrl'] == null && messages[index]['audioUrl'] == null
                                         ? Text(
                                             "${messages[index]['message']}",
                                             style:
                                                 TextStyle(color: Colors.black),
                                           )
-                                        : Image.network(
-                                            messages[index]['imageUrl'],
-                                            fit: BoxFit.cover,
-                                          ));
+                                        : messages[index]['message'] == null && messages[index]['audioUrl'] == null
+                                            ? Image.network(
+                                                messages[index]['imageUrl'],
+                                                fit: BoxFit.cover,
+                                              )
+                                            : Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                children: [
+                                                  IconButton(
+                                                      onPressed: () {
+                                                        provider.play(
+                                                            messages[index]
+                                                                ['audioUrl']);
+                                                      },
+                                                      icon: Icon(Icons.stop)),
+                                                ],
+                                              ));
                           });
                     }
                   },
@@ -170,11 +197,8 @@ class _ChatRoomState extends State<ChatRoom> {
                           children: [
                             IconButton(
                                 onPressed: () {
-                                  provider.sendImageToChatRoom(this.twoId);
-                                  // print(widget.toId.codeUnitAt(0));
-                                  // print(AuthHelper.authHelper
-                                  //     .getUserId()
-                                  //     .codeUnitAt(0));
+                                  provider.sendImageToChatRoom(
+                                      this.twoId, widget.toId);
                                 },
                                 icon: Icon(Icons.attach_file)),
                             Expanded(
@@ -202,25 +226,20 @@ class _ChatRoomState extends State<ChatRoom> {
                           },
                           icon: Icon(Icons.send)),
                     ),
-                    // Container(
-                    //   child: GestureDetector(
-                    //     onLongPress: () {
-                    //       startRecord();
-                    //       setState(() {
-                    //         isRecording = true;
-                    //       });
-                    //     },
-                    //     onLongPressEnd: (details) {
-                    //       stopRecord();
-                    //       setState(() {
-                    //         isRecording = false;
-                    //       });
-                    //     },
-                    //     child: Container(
-                    //       child: Icon(Icons.mic),
-                    //     ),
-                    //   ),
-                    // )
+                    Container(
+                      child: GestureDetector(
+                        onLongPress: () {
+                          provider.startRecord();
+                        },
+                        onLongPressEnd: (details) {
+                          provider.stopRecordChatRoom(
+                              provider.recordPath, widget.toId, twoId);
+                        },
+                        child: Container(
+                          child: Icon(Icons.mic),
+                        ),
+                      ),
+                    )
                   ],
                 ),
               ),
